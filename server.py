@@ -1,31 +1,36 @@
-from flask import Flask, request, render_template
-from EmotionDetection import emotion_detector
+from flask import Flask, request, jsonify
+from emotion_detector import emotion_detector  # Importing the emotion_detector function
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
-def emotionDetector():
-    if request.method == 'POST':
-        # Get the text input from the form
-        user_input = request.form['user_input']
-        
-        # Get the emotion analysis from the emotion_detector function
-        response = emotion_detector(user_input)
-        
-        # Extract the emotions and the dominant emotion
-        anger_score = response.get('anger')
-        disgust_score = response.get('disgust')
-        fear_score = response.get('fear')
-        joy_score = response.get('joy')
-        sadness_score = response.get('sadness')
-        dominant_emotion = response.get('dominant_emotion')
-        
-        # Prepare the output for the user
-        output = f"For the given statement, the system response is 'anger': {anger_score}, 'disgust': {disgust_score}, 'fear': {fear_score}, 'joy': {joy_score} and 'sadness': {sadness_score}. The dominant emotion is {dominant_emotion}."
-        
-        return render_template('index.html', output=output)
-    return render_template('index.html')
+@app.route("/emotionDetector", methods=["POST"])
+def emotion_detector_route():
+    # Get the statement from the POST request body (JSON)
+    user_input = request.json.get("statement")
+    
+    # Use the emotion_detector function to get the response
+    response = emotion_detector(user_input)
+    
+    # Check if the dominant emotion is None (empty or invalid input)
+    if response["dominant_emotion"] is None:
+        # If dominant_emotion is None, return an error response with 400 status
+        return jsonify({
+            "error": "Invalid text! Please try again!"
+        }), 400  # HTTP status code 400 for bad request
+    
+    # If valid, return the emotion scores along with the dominant emotion
+    formatted_response = {
+        "anger": response["anger"],
+        "disgust": response["disgust"],
+        "fear": response["fear"],
+        "joy": response["joy"],
+        "sadness": response["sadness"],
+        "dominant_emotion": response["dominant_emotion"]
+    }
+    
+    # Return the JSON response with emotion scores and dominant emotion
+    return jsonify(formatted_response)
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
+if __name__ == "__main__":
+    # Running the Flask app on localhost, port 5000
+    app.run(debug=True, host="0.0.0.0", port=5000)
