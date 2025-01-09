@@ -1,16 +1,13 @@
 from flask import Flask, request, jsonify
 from emotion_detector import emotion_detector 
-
 app = Flask(__name__)
 
 @app.route("/emotionDetector", methods=["POST"])
 def emotion_detector_route():
     # Get the statement from the POST request body (JSON)
     user_input = request.json.get("statement")
-    
     response = emotion_detector(user_input)
     
-    # Check if the dominant emotion is None (empty or invalid input)
     if response["dominant_emotion"] is None:
         # If dominant_emotion is None, return an error response with 400 status
         return jsonify({
