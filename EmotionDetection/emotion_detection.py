@@ -20,7 +20,6 @@ def emotion_detector(text_to_analyze):
     headers = {
         "grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"
     }
-
     # the text to analyze
     payload = {"raw_document": {"text": text_to_analyze}}
 
@@ -30,7 +29,6 @@ def emotion_detector(text_to_analyze):
         if response.status_code == 200:
             # Convert response to JSON
             response_data = response.json()
-            
             emotions = response_data['emotion']['emotion']
             
             # Extracting the required emotions and their scores
