@@ -2,6 +2,18 @@ import requests
 import json
 
 def emotion_detector(text_to_analyze):
+    # Check if the input text is empty or contains only spaces
+    if not text_to_analyze or not text_to_analyze.strip():
+        # Return a dictionary with None for all emotions if input is blank
+        return {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion': None
+        }
+    
     # Define the API URL
     url = "https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict"
 
