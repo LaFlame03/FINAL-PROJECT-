@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from emotion_detector import emotion_detector  # Importing the emotion_detector function
+from emotion_detector import emotion_detector 
 
 app = Flask(__name__)
 
@@ -8,7 +8,6 @@ def emotion_detector_route():
     # Get the statement from the POST request body (JSON)
     user_input = request.json.get("statement")
     
-    # Use the emotion_detector function to get the response
     response = emotion_detector(user_input)
     
     # Check if the dominant emotion is None (empty or invalid input)
